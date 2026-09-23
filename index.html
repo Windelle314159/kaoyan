@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="灯下">
+<meta name="theme-color" content="#2C6E7F">
+<title>灯下</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E7;
+    --card:#FFFFFF;
+    --ink:#2B2620;
+    --ink-soft:#7A7264;
+    --line:#E4DCC8;
+    --teal:#2C6E7F;
+    --teal-soft:#DCEBE9;
+    --amber:#DD8A3C;
+    --amber-soft:#F7E4CC;
+    --sage:#6E8F73;
+    --sage-soft:#E1EAE0;
+    --danger:#B65B4A;
+    --shadow: 0 1px 2px rgba(43,38,32,0.06), 0 6px 16px rgba(43,38,32,0.06);
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark){
+      --paper:#1B1815;
+      --card:#242019;
+      --ink:#EDE6D8;
+      --ink-soft:#A69C8A;
+      --line:#3A3327;
+      --teal:#5FA6B4;
+      --teal-soft:#213A3B;
+      --amber:#E8A05C;
+      --amber-soft:#3A2C1B;
+      --sage:#8FB396;
+      --sage-soft:#243329;
+      --danger:#D3897A;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 6px 20px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1B1815;
+    --card:#242019;
+    --ink:#EDE6D8;
+    --ink-soft:#A69C8A;
+    --line:#3A3327;
+    --teal:#5FA6B4;
+    --teal-soft:#213A3B;
+    --amber:#E8A05C;
+    --amber-soft:#3A2C1B;
+    --sage:#8FB396;
+    --sage-soft:#243329;
+    --danger:#D3897A;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 6px 20px rgba(0,0,0,0.35);
+  }
+  html,body{height:100%;}
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans SC", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior:none;
+  }
+  h1,h2,h3,.serif{ font-family:"Noto Serif SC", serif; }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  /* header */
+  .topbar{
+    padding:18px 20px 6px;
+  }
+  .topbar .eyebrow{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .topbar .brand{
+    font-family:"Noto Serif SC", serif;
+    font-size:12px;
+    letter-spacing:0.28em;
+    color:var(--teal);
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .topbar h1{
+    margin:2px 0 0;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  /* scroll area */
+  .views{
+    flex:1;
+    overflow-y:auto;
+    padding: 8px 16px 96px;
+    scroll-padding-top: env(safe-area-inset-top,0px);
+  }
+  .view{ display:none; animation: fade .25s ease; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+    box-shadow:var(--shadow);
+  }
+  .card + .card{ margin-top:12px; }
+  .section-title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin: 20px 4px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .section-title:first-child{ margin-top:6px; }
+
+  /* countdown hero */
+  .hero{
+    background: linear-gradient(155deg, var(--teal) 0%, #234f5c 100%);
+    color:#F3F0E6;
+    border-radius:18px;
+    padding:20px 20px 18px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .label{ font-size:13px; opacity:0.85; }
+  .hero .num{
+    font-family:"Noto Serif SC", serif;
+    font-size:48px;
+    font-weight:700;
+    line-height:1.1;
+    margin:2px 0 0;
+  }
+  .hero .num span{ font-size:18px; font-weight:500; margin-left:4px; opacity:0.9; }
+  .hero .sub{ font-size:13px; margin-top:10px; opacity:0.9; display:flex; gap:16px; }
+  .hero .sub b{ font-family:"Noto Serif SC", serif; font-weight:700; font-size:15px; }
+  .cd-list{ display:flex; gap:8px; overflow-x:auto; margin-top:10px; padding-bottom:2px; }
+  .cd-chip{
+    flex:none; background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:8px 12px; min-width:88px; cursor:pointer;
+  }
+  .cd-chip.pinned{ border-color:var(--amber); background:var(--amber-soft); }
+  .cd-chip:active{ opacity:0.8; }
+  .cd-chip .cl{ font-size:11.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
+  .cd-chip .cn{ font-family:"Noto Serif SC", serif; font-weight:700; font-size:16px; color:var(--teal); margin-top:2px; }
+
+  /* focus timer */
+  .timer-wrap{
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .ring{ position:relative; width:104px; height:104px; flex:none; }
+  .ring svg{ transform:rotate(-90deg); width:104px; height:104px; }
+  .ring circle{ fill:none; stroke-width:8; }
+  .ring .bg{ stroke:var(--line); }
+  .ring .fg{ stroke:var(--amber); stroke-linecap:round; transition: stroke-dashoffset 1s linear; }
+  .ring .time{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Noto Serif SC", serif;
+    font-size:20px; font-weight:700;
+  }
+  .timer-info{ flex:1; min-width:0; }
+  .timer-info .state{ font-size:13px; color:var(--ink-soft); margin-bottom:6px; }
+  .timer-btns{ display:flex; gap:8px; margin-top:10px; }
+  .btn{
+    border:none;
+    border-radius:11px;
+    padding:9px 16px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn-primary{ background:var(--amber); color:#fff; }
+  .btn-ghost{ background:var(--paper); color:var(--ink); border:1px solid var(--line); }
+  .btn-teal{ background:var(--teal); color:#fff; }
+  .btn-sage{ background:var(--sage); color:#fff; }
+  .btn:active{ transform:scale(0.97); }
+  .btn:disabled{ opacity:0.5; }
+
+  /* task list */
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 2px;
+    border-bottom:1px solid var(--line);
+  }
+  .task:last-child{ border-bottom:none; }
+  .task .box{
+    width:20px; height:20px; border-radius:6px;
+    border:2px solid var(--teal);
+    flex:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    color:transparent;
+    font-size:13px;
+  }
+  .task.done .box{ background:var(--teal); color:#fff; }
+  .task .txt{ flex:1; font-size:14.5px; }
+  .task .txt .tag{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+  .task .txt .plan-badge{
+    display:inline-block; font-size:10px; color:var(--teal); background:var(--teal-soft);
+    border-radius:8px; padding:1px 6px; margin-left:6px; vertical-align:middle; font-weight:600;
+  }
+  .task.done .txt{ text-decoration:line-through; color:var(--ink-soft); }
+  .task .del{ color:var(--ink-soft); font-size:18px; cursor:pointer; padding:2px 4px; }
+  .dur-chips{ display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+  .dur-chip{
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    border-radius:16px; padding:5px 11px; font-size:12px; cursor:pointer; font-family:inherit;
+  }
+  .dur-chip.on{ background:var(--amber-soft); border-color:var(--amber); color:var(--amber); font-weight:600; }
+  .timer-subj-row{ display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .timer-subj-row select{ flex:1; }
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(20,18,14,0.45);
+    opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:40;
+  }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  .modal{
+    position:fixed; left:50%; top:50%;
+    transform:translate(-50%,-46%);
+    width:min(88vw, 360px);
+    background:var(--card);
+    border-radius:16px;
+    padding:18px 18px 14px;
+    box-shadow:0 12px 32px rgba(0,0,0,0.25);
+    z-index:41;
+    opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    max-height:80vh;
+    overflow-y:auto;
+  }
+  .modal.open{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%); }
+  .modal-title{ font-family:"Noto Serif SC", serif; font-weight:700; font-size:16px; margin-bottom:8px; }
+  .modal-body{ font-size:14px; color:var(--ink); line-height:1.6; }
+  .modal-body input[type=number], .modal-body input[type=text]{
+    width:100%; border:1px solid var(--line); background:var(--paper); border-radius:10px;
+    padding:9px 12px; font-size:15px; color:var(--ink); font-family:inherit; margin-top:8px;
+  }
+  .modal-body textarea{
+    width:100%; min-height:110px; border:1px solid var(--line); background:var(--paper);
+    border-radius:10px; padding:9px 12px; font-size:12.5px; color:var(--ink); font-family:monospace;
+    margin-top:8px; resize:vertical;
+  }
+  .modal-note{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
+  .modal-btns{ display:flex; gap:8px; margin-top:16px; justify-content:flex-end; }
+  .modal-btns .btn{ flex:none; }
+  .add-row{ display:flex; gap:8px; margin-top:10px; }
+  .add-row input{
+    flex:1;
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:10px;
+    padding:9px 12px;
+    font-size:14.5px;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  .add-row input:focus, textarea:focus, select:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+  .empty{ color:var(--ink-soft); font-size:13.5px; padding:14px 2px; text-align:center; }
+
+  /* streak chips */
+  .stat-row{ display:flex; gap:10px; margin-top:12px; }
+  .stat{
+    flex:1;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 10px;
+    text-align:center;
+  }
+  .stat .n{ font-family:"Noto Serif SC", serif; font-size:20px; font-weight:700; color:var(--teal); }
+  .stat .l{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .stat.editable{ cursor:pointer; }
+  .stat.editable:active{ background:var(--teal-soft); }
+
+  /* calendar */
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .cal-head .m{ font-family:"Noto Serif SC", serif; font-weight:700; font-size:17px; }
+  .cal-nav{ display:flex; gap:6px; }
+  .cal-nav button{
+    border:1px solid var(--line); background:var(--card); border-radius:8px;
+    width:30px; height:30px; font-size:14px; color:var(--ink); cursor:pointer;
+  }
+  .weekdays, .days{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .weekdays div{ text-align:center; font-size:11.5px; color:var(--ink-soft); padding-bottom:4px; }
+  .day{
+    aspect-ratio:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+    position:relative;
+    color:var(--ink);
+  }
+  .day.other{ color:var(--line); }
+  .day.today{ border:1.5px solid var(--teal); font-weight:700; }
+  .day.sel{ background:var(--teal); color:#fff; }
+  .day .dot{ width:4px; height:4px; border-radius:50%; background:var(--amber); margin-top:2px; }
+  .day.sel .dot{ background:#fff; }
+
+  /* subjects */
+  .subj{
+    display:flex; align-items:center; gap:12px; padding:10px 2px; border-bottom:1px solid var(--line);
+  }
+  .subj:last-child{ border-bottom:none; }
+  .subj .dot2{ width:10px; height:10px; border-radius:50%; flex:none; }
+  .subj .body{ flex:1; min-width:0; }
+  .subj .name{ font-size:14.5px; font-weight:600; }
+  .subj .bar{ height:6px; background:var(--paper); border-radius:4px; margin-top:6px; overflow:hidden; }
+  .subj .bar > div{ height:100%; border-radius:4px; }
+  .subj .mins{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .subj.editable-subj{ cursor:pointer; }
+  .subj.editable-subj:active{ background:var(--paper); }
+  .subj .edit-ic{ flex:none; font-size:13px; opacity:0.6; }
+
+  .bar-chart{ display:flex; align-items:flex-end; gap:8px; height:120px; padding-top:8px; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .bar-col .v{ font-size:10.5px; color:var(--ink-soft); margin-bottom:4px; }
+  .bar-col .b{ width:60%; min-height:3px; border-radius:5px 5px 3px 3px; background:var(--teal); }
+  .bar-col .b.today{ background:var(--amber); }
+  .bar-col .d{ font-size:11px; color:var(--ink-soft); margin-top:6px; }
+
+  /* plans */
+  .plan-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:14px 16px; box-shadow:var(--shadow); margin-bottom:12px;
+  }
+  .plan-card.done{ opacity:0.6; }
+  .plan-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .plan-title-wrap{ display:flex; align-items:center; gap:7px; min-width:0; }
+  .plan-title-wrap .dot2{ flex:none; }
+  .plan-title{ font-size:15px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .plan-actions{ display:flex; gap:10px; flex:none; }
+  .plan-actions span{ cursor:pointer; font-size:14px; opacity:0.65; }
+  .plan-bar{ height:8px; background:var(--paper); border-radius:5px; margin-top:12px; overflow:hidden; cursor:pointer; }
+  .plan-bar > div{ height:100%; border-radius:5px; background:var(--teal); transition:width .3s ease; }
+  .plan-meta{ font-size:12.5px; color:var(--ink-soft); margin-top:7px; }
+  .plan-chips{ display:flex; gap:6px; margin-top:9px; flex-wrap:wrap; }
+  .plan-chip{
+    font-size:11.5px; border-radius:14px; padding:4px 10px;
+    background:var(--teal-soft); color:var(--teal); font-weight:600;
+  }
+  .plan-chip.warn{ background:var(--amber-soft); color:var(--amber); }
+  .plan-chip.danger{ background:#F3DEDA; color:var(--danger); }
+  .plan-chip.done{ background:var(--sage-soft); color:var(--sage); }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  .form-grid.full{ grid-template-columns:1fr; }
+  .seg{ display:flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:8px; }
+  .seg button{
+    flex:1; border:none; background:var(--paper); color:var(--ink-soft); padding:8px 0;
+    font-family:inherit; font-size:13px; cursor:pointer;
+  }
+  .seg button.on{ background:var(--teal); color:#fff; font-weight:600; }
+  .form-hint{ font-size:12px; color:var(--ink-soft); margin-top:8px; }
+
+  .select-row, .form-row{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  select, .num-input{
+    border:1px solid var(--line); background:var(--paper); border-radius:10px;
+    padding:9px 10px; font-size:14px; color:var(--ink); font-family:inherit;
+  }
+  .num-input{ width:76px; }
+
+  label.f{ display:block; font-size:12.5px; color:var(--ink-soft); margin:12px 0 4px; }
+  input[type=text], input[type=date], input[type=number]{
+    width:100%;
+    border:1px solid var(--line); background:var(--paper); border-radius:10px;
+    padding:10px 12px; font-size:14.5px; color:var(--ink); font-family:inherit;
+  }
+
+  /* bottom nav */
+  .nav{
+    position:fixed; left:0; right:0; bottom:0;
+    max-width:480px; margin:0 auto;
+    background:var(--card);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding-bottom: env(safe-area-inset-bottom,0px);
+    z-index:20;
+  }
+  .nav button{
+    flex:1; background:none; border:none; padding:9px 0 8px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    color:var(--ink-soft); font-family:inherit; font-size:11px; cursor:pointer;
+  }
+  .nav button .ic{ font-size:19px; line-height:1; }
+  .nav button.on{ color:var(--teal); }
+
+  .row-between{ display:flex; align-items:center; justify-content:space-between; }
+  .heatmap-scroll{ overflow-x:auto; padding-bottom:4px; }
+  .heatmap{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,10px); gap:3px; width:max-content; }
+  .heatmap .hc{ width:10px; height:10px; border-radius:2.5px; background:var(--line); }
+  .heatmap .hc.l1{ background:var(--teal-soft); }
+  .heatmap .hc.l2{ background:color-mix(in srgb, var(--teal) 45%, var(--teal-soft)); }
+  .heatmap .hc.l3{ background:color-mix(in srgb, var(--teal) 75%, var(--teal-soft)); }
+  .heatmap .hc.l4{ background:var(--teal); }
+  .heatmap-legend{ display:flex; align-items:center; gap:5px; margin-top:8px; font-size:11px; color:var(--ink-soft); }
+  .hm-sw{ width:10px; height:10px; border-radius:2.5px; }
+  .hm-sw[data-l="0"]{ background:var(--line); }
+  .hm-sw[data-l="1"]{ background:var(--teal-soft); }
+  .hm-sw[data-l="2"]{ background:color-mix(in srgb, var(--teal) 45%, var(--teal-soft)); }
+  .hm-sw[data-l="3"]{ background:color-mix(in srgb, var(--teal) 75%, var(--teal-soft)); }
+  .hm-sw[data-l="4"]{ background:var(--teal); }
+  .muted{ color:var(--ink-soft); font-size:12.5px; }
+  ::-webkit-scrollbar{ width:0; height:0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">灯下</div>
+    <div class="eyebrow" id="todayLabel">—</div>
+    <h1 id="greeting">你好，考研人</h1>
+  </div>
+
+  <div class="views" id="views">
+
+    <!-- 今日 -->
+    <section class="view active" data-view="today">
+      <div class="hero">
+        <div class="label" id="heroLabel">距离考研初试</div>
+        <div class="num" id="countdownNum">— <span>天</span></div>
+        <div class="sub">
+          <div>目标&nbsp;<b id="heroTarget">未设置</b></div>
+          <div>日期&nbsp;<b id="heroDate">—</b></div>
+        </div>
+      </div>
+      <div id="countdownList" class="cd-list"></div>
+
+      <div class="stat-row">
+        <div class="stat editable" id="statFocusTodayCard"><div class="n" id="statFocusToday">0</div><div class="l">今日专注(分钟) ✏️</div></div>
+        <div class="stat"><div class="n" id="statStreak">0</div><div class="l">连续打卡(天)</div></div>
+        <div class="stat"><div class="n" id="statDone">0/0</div><div class="l">今日任务</div></div>
+      </div>
+
+      <div class="section-title">专注计时</div>
+      <div class="card">
+        <div class="timer-wrap">
+          <div class="ring">
+            <svg viewBox="0 0 104 104">
+              <circle class="bg" cx="52" cy="52" r="45"></circle>
+              <circle class="fg" id="ringFg" cx="52" cy="52" r="45" stroke-dasharray="283"></circle>
+            </svg>
+            <div class="time" id="timerDisplay">25:00</div>
+          </div>
+          <div class="timer-info">
+            <div class="state" id="timerState">未开始 · 25 分钟一段</div>
+            <div class="timer-btns">
+              <button class="btn btn-primary" id="timerToggle">开始专注</button>
+              <button class="btn btn-ghost" id="timerReset">重置</button>
+            </div>
+          </div>
+        </div>
+        <div class="dur-chips" id="durChips">
+          <button class="dur-chip" data-m="15">15分</button>
+          <button class="dur-chip" data-m="25">25分</button>
+          <button class="dur-chip" data-m="35">35分</button>
+          <button class="dur-chip" data-m="45">45分</button>
+          <button class="dur-chip" data-m="50">50分</button>
+          <button class="dur-chip" data-m="custom">自定义</button>
+        </div>
+        <div class="timer-subj-row">
+          <span class="muted">记录到科目</span>
+          <select id="timerSubj"></select>
+        </div>
+      </div>
+
+      <div class="section-title">
+        今日任务
+        <span class="muted" id="taskCount"></span>
+      </div>
+      <div class="card">
+        <div id="taskList"></div>
+        <div class="add-row">
+          <select id="newTaskSubj" style="flex:none;"></select>
+          <input type="text" id="newTask" placeholder="添加一项今日任务…" maxlength="60">
+          <button class="btn btn-teal" id="addTaskBtn">添加</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 日历 -->
+    <section class="view" data-view="calendar">
+      <div class="card">
+        <div class="cal-head">
+          <div class="m" id="calMonthLabel">—</div>
+          <div class="cal-nav">
+            <button id="calPrev">‹</button>
+            <button id="calToday">今</button>
+            <button id="calNext">›</button>
+          </div>
+        </div>
+        <div class="weekdays"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+        <div class="days" id="calGrid"></div>
+      </div>
+
+      <div class="section-title" id="calSelLabel">今天</div>
+      <div class="card">
+        <div id="calTaskList"></div>
+        <div class="add-row">
+          <select id="calNewTaskSubj" style="flex:none;"></select>
+          <input type="text" id="calNewTask" placeholder="为这一天添加安排…" maxlength="60">
+          <button class="btn btn-teal" id="calAddBtn">添加</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 任务/长期计划 -->
+    <section class="view" data-view="plans">
+      <div class="section-title">
+        进行中的任务
+        <span class="muted" id="planActiveCount"></span>
+      </div>
+      <div id="planActiveList"></div>
+
+      <div class="card" style="margin-top:12px;">
+        <button class="btn btn-teal" id="newPlanBtn" style="width:100%;">＋ 添加任务</button>
+      </div>
+
+      <div class="section-title" id="planDoneTitle" style="display:none;">已完成</div>
+      <div id="planDoneList"></div>
+    </section>
+
+    <!-- 学习 -->
+    <section class="view" data-view="study">
+      <div class="section-title">最近7天专注</div>
+      <div class="card">
+        <div class="bar-chart" id="weekChart"></div>
+      </div>
+
+      <div class="section-title">科目进度（本周）</div>
+      <div class="card">
+        <div id="subjList"></div>
+      </div>
+
+      <div class="section-title">记录学习时长</div>
+      <div class="card">
+        <div class="form-row">
+          <select id="logSubj"></select>
+          <input class="num-input" type="number" id="logMins" placeholder="分钟" min="1" max="600">
+          <button class="btn btn-sage" id="logBtn">记录</button>
+        </div>
+        <div class="muted" style="margin-top:8px;">专注计时结束后也会自动计入所选科目</div>
+      </div>
+
+      <div class="section-title">
+        我的科目
+      </div>
+      <div class="card">
+        <div id="subjManageList"></div>
+        <div class="add-row">
+          <input type="text" id="newSubj" placeholder="添加科目，如 专业课·化工原理" maxlength="30">
+          <button class="btn btn-teal" id="addSubjBtn">添加</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 我的 -->
+    <section class="view" data-view="profile">
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <div style="font-family:'Noto Serif SC',serif; font-weight:700; font-size:17px;" id="profName">研友</div>
+            <div class="muted" id="profSub">考研倒计时中</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">目标设置</div>
+      <div class="card">
+        <label class="f">目标院校 · 专业</label>
+        <input type="text" id="setTarget" placeholder="如 武汉理工大学 · 化学工程">
+        <label class="f">每日专注目标（分钟）</label>
+        <input type="number" id="setDailyGoal" min="10" max="720">
+        <div style="margin-top:14px;">
+          <button class="btn btn-teal" id="saveProfBtn">保存设置</button>
+        </div>
+      </div>
+
+      <div class="section-title">重要日期</div>
+      <div class="card">
+        <div id="cdManageList"></div>
+        <div class="form-row">
+          <input type="text" id="newCdLabel" placeholder="名称，如 考研初试" style="flex:1; min-width:110px;">
+          <input type="date" id="newCdDate" style="flex:1; min-width:130px;">
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-teal" id="addCdBtn">添加日期</button>
+        </div>
+      </div>
+
+      <div class="section-title">打卡记录</div>
+      <div class="card">
+        <div class="heatmap-scroll"><div id="heatmap" class="heatmap"></div></div>
+        <div class="heatmap-legend">
+          <span>少</span>
+          <span class="hm-sw" data-l="0"></span>
+          <span class="hm-sw" data-l="1"></span>
+          <span class="hm-sw" data-l="2"></span>
+          <span class="hm-sw" data-l="3"></span>
+          <span class="hm-sw" data-l="4"></span>
+          <span>多</span>
+        </div>
+      </div>
+
+      <div class="section-title">累计数据</div>
+      <div class="card">
+        <div class="stat-row">
+          <div class="stat"><div class="n" id="profTotalHours">0</div><div class="l">累计专注(小时)</div></div>
+          <div class="stat"><div class="n" id="profBestStreak">0</div><div class="l">最长连续打卡</div></div>
+          <div class="stat"><div class="n" id="profDoneTasks">0</div><div class="l">累计完成任务</div></div>
+        </div>
+      </div>
+
+      <div class="section-title">数据管理</div>
+      <div class="card">
+        <div class="muted">数据只保存在本设备的浏览器里，换设备或清理浏览器数据前，建议先导出备份。</div>
+        <div class="form-row">
+          <button class="btn btn-teal" id="exportBtn">导出备份</button>
+          <button class="btn btn-ghost" id="importBtn">导入备份</button>
+          <button class="btn btn-ghost" id="resetBtn">清空重置</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+      </div>
+    </section>
+
+  </div>
+
+  <div class="nav">
+    <button class="on" data-nav="today"><span class="ic">☀️</span>今日</button>
+    <button data-nav="calendar"><span class="ic">🗓️</span>日历</button>
+    <button data-nav="plans"><span class="ic">📋</span>任务</button>
+    <button data-nav="study"><span class="ic">📘</span>学习</button>
+    <button data-nav="profile"><span class="ic">🙂</span>我的</button>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="modal" id="modal">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-btns" id="modalBtns"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- storage ---------- */
+  var STORE_KEY = "kaoyan_companion_v1";
+  var defaultState = {
+    profile: { name:"研友", target:"", examDate:"", dailyGoal:180, pomodoroMinutes:25 },
+    countdowns: [], // {id,label,date}
+    subjects: [
+      { id:"math", name:"数学", color:"var(--teal)" },
+      { id:"eng", name:"英语", color:"var(--amber)" },
+      { id:"pol", name:"政治", color:"var(--sage)" },
+      { id:"pro", name:"专业课·化工原理", color:"#9B7EC9" }
+    ],
+    plans: [],              // {id,title,subjectId,type:'pages'|'count',startPage,endPage,totalUnits,unitLabel,startDate,endDate,doneUnits,status}
+    tasksByDate: {},       // "YYYY-MM-DD": [{id,text,done,subjectId,planId,planUnits}]
+    focusByDate: {},       // "YYYY-MM-DD": minutes
+    focusBySubjectWeek: {},// subjId: minutes (resets weekly, week key stored separately)
+    weekKey: "",
+    streak: 0,
+    lastCheckDate: "",
+    bestStreak: 0,
+    totalFocusMinutes: 0,
+    totalDoneTasks: 0
+  };
+  var state = loadState();
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      if(!raw) return JSON.parse(JSON.stringify(defaultState));
+      var parsed = JSON.parse(raw);
+      // shallow-merge to survive schema growth
+      var merged = JSON.parse(JSON.stringify(defaultState));
+      for(var k in parsed){ merged[k]=parsed[k]; }
+      if(!merged.profile) merged.profile = defaultState.profile;
+      if(!merged.profile.pomodoroMinutes) merged.profile.pomodoroMinutes = 25;
+      if(!merged.subjects || !merged.subjects.length) merged.subjects = defaultState.subjects;
+      if(!merged.countdowns) merged.countdowns = [];
+      if(!merged.plans) merged.plans = [];
+      // migrate legacy single exam date into the countdown list, once
+      if(merged.profile.examDate && !merged.countdowns.some(function(c){return c.date===merged.profile.examDate;})){
+        merged.countdowns.unshift({ id:"legacy_exam", label:"考研初试", date: merged.profile.examDate });
+      }
+      return merged;
+    }catch(e){
+      return JSON.parse(JSON.stringify(defaultState));
+    }
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* ---------- date helpers ---------- */
+  function pad(n){ return n<10 ? "0"+n : ""+n; }
+  function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function todayDate(){ return new Date(); }
+  var TODAY_KEY = ymd(todayDate());
+  function isoWeekKey(d){
+    var t = new Date(d);
+    var day = (t.getDay()+6)%7;
+    t.setDate(t.getDate()-day);
+    return ymd(t);
+  }
+  var WEEKDAYS = ["周日","周一","周二","周三","周四","周五","周六"];
+  var MONTHS = ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+
+  // ensure weekly bucket is current
+  (function ensureWeek(){
+    var wk = isoWeekKey(todayDate());
+    if(state.weekKey !== wk){
+      state.weekKey = wk;
+      state.focusBySubjectWeek = {};
+      saveState();
+    }
+  })();
+
+  /* ---------- modal (replaces confirm/prompt/alert, which don't fire in some in-app browsers) ---------- */
+  var modalBackdrop = document.getElementById("modalBackdrop");
+  var modalEl = document.getElementById("modal");
+  var modalTitleEl = document.getElementById("modalTitle");
+  var modalBodyEl = document.getElementById("modalBody");
+  var modalBtnsEl = document.getElementById("modalBtns");
+  function closeModal(){
+    modalBackdrop.classList.remove("open");
+    modalEl.classList.remove("open");
+  }
+  // opts: { title, bodyHTML, focusSelector, buttons:[{label, primary, danger, onClick(bodyEl)}] }
+  function openModal(opts){
+    modalTitleEl.textContent = opts.title || "";
+    modalBodyEl.innerHTML = opts.bodyHTML || "";
+    modalBtnsEl.innerHTML = "";
+    (opts.buttons||[]).forEach(function(b){
+      var btn = document.createElement("button");
+      btn.className = "btn " + (b.primary ? "btn-teal" : "btn-ghost");
+      btn.textContent = b.label;
+      btn.addEventListener("click", function(){
+        var keepOpen = b.onClick ? b.onClick(modalBodyEl, this) : false;
+        if(!keepOpen) closeModal();
+      });
+      modalBtnsEl.appendChild(btn);
+    });
+    modalBackdrop.classList.add("open");
+    modalEl.classList.add("open");
+    if(opts.focusSelector){
+      setTimeout(function(){
+        var el = modalBodyEl.querySelector(opts.focusSelector);
+        if(el){ el.focus(); if(el.select) el.select(); }
+      }, 60);
+    }
+  }
+  modalBackdrop.addEventListener("click", closeModal);
+  function confirmModal(message, onConfirm){
+    openModal({
+      title: "确认",
+      bodyHTML: '<div>'+message+'</div>',
+      buttons: [
+        { label:"取消" },
+        { label:"确定", primary:true, onClick: function(){ onConfirm(); } }
+      ]
+    });
+  }
+  function alertModal(message){
+    openModal({
+      title: "提示",
+      bodyHTML: '<div>'+message+'</div>',
+      buttons: [ { label:"知道了", primary:true } ]
+    });
+  }
+  function numberPromptModal(title, currentVal, onSave){
+    openModal({
+      title: title,
+      bodyHTML: '<input type="number" id="mNumInput" value="'+currentVal+'" inputmode="numeric">',
+      focusSelector: "#mNumInput",
+      buttons: [
+        { label:"取消" },
+        { label:"保存", primary:true, onClick: function(body){
+            var v = parseInt(body.querySelector("#mNumInput").value, 10);
+            if(isNaN(v)) return false;
+            onSave(v);
+          } }
+      ]
+    });
+  }
+
+
+  document.getElementById("todayLabel").textContent =
+    todayDate().getFullYear()+"年"+(todayDate().getMonth()+1)+"月"+todayDate().getDate()+"日 · "+WEEKDAYS[todayDate().getDay()];
+
+  var hour = todayDate().getHours();
+  var greet = hour<6? "夜深了，注意休息" : hour<11? "早上好，开始今天的复习吧" : hour<14? "中午好，劳逸结合" : hour<19? "下午好，继续加油" : "晚上好，今天辛苦了";
+  document.getElementById("greeting").textContent = greet;
+
+  /* ---------- nav ---------- */
+  var views = document.querySelectorAll(".view");
+  var navBtns = document.querySelectorAll(".nav button");
+  navBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      navBtns.forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      var name = btn.getAttribute("data-nav");
+      views.forEach(function(v){ v.classList.toggle("active", v.getAttribute("data-view")===name); });
+      document.getElementById("views").scrollTop = 0;
+      if(name==="calendar") renderCalendar();
+      if(name==="plans") renderPlans();
+      if(name==="study") renderStudy();
+      if(name==="profile") renderProfile();
+    });
+  });
+
+  /* ---------- countdown ---------- */
+  function daysUntil(dateStr){
+    var d = new Date(dateStr+"T00:00:00");
+    var now = new Date(); now.setHours(0,0,0,0);
+    return Math.round((d-now)/86400000);
+  }
+  function renderCountdown(){
+    var numEl = document.getElementById("countdownNum");
+    var dateEl = document.getElementById("heroDate");
+    var targetEl = document.getElementById("heroTarget");
+    var labelEl = document.getElementById("heroLabel");
+    targetEl.textContent = state.profile.target || "未设置";
+
+    var list = (state.countdowns||[]).filter(function(c){return c.date;});
+    list.sort(function(a,b){ return daysUntil(a.date)-daysUntil(b.date); });
+    var pinned = list.find(function(c){ return c.pinned; });
+    var primary = pinned || list.filter(function(c){ return daysUntil(c.date) >= 0; })[0] || list[list.length-1];
+
+    if(!primary){
+      labelEl.textContent = "距离考研初试";
+      numEl.innerHTML = "未设置 <span>日期</span>";
+      dateEl.textContent = "去「我的」添加";
+    } else {
+      var diff = daysUntil(primary.date);
+      labelEl.textContent = "距离"+primary.label;
+      dateEl.textContent = primary.date;
+      if(diff > 0) numEl.innerHTML = diff+" <span>天</span>";
+      else if(diff === 0) numEl.innerHTML = "就是今天 <span>加油</span>";
+      else numEl.innerHTML = "已过 "+(-diff)+" <span>天</span>";
+    }
+
+    var listEl = document.getElementById("countdownList");
+    listEl.innerHTML = "";
+    list.forEach(function(c){
+      var diff = daysUntil(c.date);
+      var chip = document.createElement("div");
+      chip.className = "cd-chip"+(c.pinned?" pinned":"");
+      var txt = diff>0 ? (diff+"天") : (diff===0 ? "今天" : ("已过"+(-diff)+"天"));
+      chip.innerHTML = '<div class="cl"></div><div class="cn"></div>';
+      chip.querySelector(".cl").textContent = (c.pinned?"📌 ":"")+c.label;
+      chip.querySelector(".cn").textContent = txt;
+      chip.title = "点击设为首页倒计时";
+      chip.addEventListener("click", function(){
+        list.forEach(function(x){ x.pinned = (x.id===c.id) ? !c.pinned : false; });
+        saveState();
+        renderCountdown();
+      });
+      listEl.appendChild(chip);
+    });
+  }
+
+  /* ---------- tasks (today view uses TODAY_KEY) ---------- */
+  function getTasks(dateKey){
+    if(!state.tasksByDate[dateKey]) state.tasksByDate[dateKey] = [];
+    return state.tasksByDate[dateKey];
+  }
+  function subjectById(id){
+    var idx = state.subjects.findIndex(function(s){ return s.id===id; });
+    if(idx<0) return null;
+    return { name: state.subjects[idx].name, color: subjColor(idx) };
+  }
+  function renderTaskListInto(el, dateKey, countEl){
+    var tasks = getTasks(dateKey);
+    el.innerHTML = "";
+    if(!tasks.length){
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "还没有任务，添加一个开始吧";
+      el.appendChild(empty);
+    }
+    tasks.forEach(function(t){
+      var row = document.createElement("div");
+      row.className = "task"+(t.done?" done":"");
+      row.innerHTML = '<div class="box">'+(t.done?"✓":"")+'</div><div class="txt"></div><div class="del">✕</div>';
+      var txtEl = row.querySelector(".txt");
+      var subj = t.subjectId ? subjectById(t.subjectId) : null;
+      if(subj){
+        var tag = document.createElement("span");
+        tag.className = "tag";
+        tag.style.background = subj.color;
+        txtEl.appendChild(tag);
+      }
+      txtEl.appendChild(document.createTextNode(t.text));
+      if(t.planId){
+        var pb = document.createElement("span");
+        pb.className = "plan-badge";
+        pb.textContent = "计划";
+        txtEl.appendChild(pb);
+      }
+      row.querySelector(".box").addEventListener("click", function(){
+        if(!t.done && t.planId){
+          openPlanCompleteModal(t, function(v){
+            t.done = true;
+            t.actualUnits = Math.max(0, v);
+            state.totalDoneTasks += 1;
+            adjustPlanProgress(t.planId, t.actualUnits);
+            saveState();
+            renderTaskListInto(el, dateKey, countEl);
+            if(dateKey===TODAY_KEY) renderStats();
+          });
+          return;
+        }
+        t.done = !t.done;
+        state.totalDoneTasks += t.done ? 1 : -1;
+        if(state.totalDoneTasks<0) state.totalDoneTasks=0;
+        if(t.planId && !t.done){ adjustPlanProgress(t.planId, -(t.actualUnits!=null?t.actualUnits:(t.planUnits||0))); }
+        saveState();
+        renderTaskListInto(el, dateKey, countEl);
+        if(dateKey===TODAY_KEY) renderStats();
+      });
+      row.querySelector(".del").addEventListener("click", function(){
+        var idx = tasks.indexOf(t);
+        if(idx>-1) tasks.splice(idx,1);
+        if(t.planId && t.done){ adjustPlanProgress(t.planId, -(t.actualUnits!=null?t.actualUnits:(t.planUnits||0))); }
+        saveState();
+        renderTaskListInto(el, dateKey, countEl);
+        if(dateKey===TODAY_KEY) renderStats();
+        renderCalendar();
+      });
+      el.appendChild(row);
+    });
+    if(countEl){
+      var done = tasks.filter(function(t){return t.done;}).length;
+      countEl.textContent = tasks.length ? (done+"/"+tasks.length+" 完成") : "";
+    }
+  }
+  function addTask(dateKey, text, subjectId, planId, planUnits){
+    text = text.trim();
+    if(!text) return;
+    getTasks(dateKey).push({ id: Date.now()+"_"+Math.random().toString(36).slice(2,7), text: text, done:false, subjectId: subjectId||"", planId: planId||"", planUnits: planUnits||0 });
+    saveState();
+  }
+
+  var taskListEl = document.getElementById("taskList");
+  var taskCountEl = document.getElementById("taskCount");
+  document.getElementById("addTaskBtn").addEventListener("click", function(){
+    var inp = document.getElementById("newTask");
+    var subjSel = document.getElementById("newTaskSubj");
+    addTask(TODAY_KEY, inp.value, subjSel.value);
+    inp.value = "";
+    renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
+    renderStats();
+  });
+  document.getElementById("newTask").addEventListener("keydown", function(e){
+    if(e.key==="Enter") document.getElementById("addTaskBtn").click();
+  });
+
+  /* ---------- plans (long-term tasks with auto daily breakdown) ---------- */
+  function planTotal(p){
+    return p.type==="pages" ? Math.max(0, (p.endPage - p.startPage + 1)) : Math.max(0, p.totalUnits||0);
+  }
+  function planRemaining(p){
+    return Math.max(0, planTotal(p) - (p.doneUnits||0));
+  }
+  function planDaysRemaining(p){
+    return Math.max(1, daysUntil(p.endDate) + 1);
+  }
+  function planIsOverdue(p){
+    return daysUntil(p.endDate) < 0 && planRemaining(p) > 0;
+  }
+  function adjustPlanProgress(planId, delta){
+    var p = state.plans.find(function(x){ return x.id===planId; });
+    if(!p) return;
+    p.doneUnits = Math.max(0, (p.doneUnits||0) + delta);
+    if(planRemaining(p) <= 0){ p.status = "done"; }
+    else if(p.status==="done"){ p.status = "active"; }
+  }
+  function planDailyTaskText(p, chunk){
+    if(p.type==="pages"){
+      var from = p.startPage + (p.doneUnits||0);
+      var to = Math.min(p.endPage, from + chunk - 1);
+      return p.title+" 第"+from+"–"+to+"页";
+    }
+    return p.title+" · 完成"+chunk+(p.unitLabel||"项");
+  }
+  // ask how much of a plan-linked task was actually done; for page-range plans,
+  // let the user just type the page they stopped at instead of counting pages themselves
+  function openPlanCompleteModal(task, onSave){
+    var p = state.plans.find(function(x){ return x.id===task.planId; });
+    if(!p || p.type!=="pages"){
+      var unitLabel = p ? (p.unitLabel||"项") : "";
+      numberPromptModal("这项实际完成了多少"+unitLabel+"？", task.planUnits||0, onSave);
+      return;
+    }
+    var startPage = p.startPage + (p.doneUnits||0);
+    var plannedEnd = Math.min(p.endPage, startPage + (task.planUnits||1) - 1);
+    var body =
+      '<div class="seg" id="pcSeg">'+
+        '<button type="button" data-m="page" class="on">写到第几页</button>'+
+        '<button type="button" data-m="qty">按页数</button>'+
+      '</div>'+
+      '<div id="pcPageBox" style="margin-top:8px;">'+
+        '<label class="f" style="margin-top:0;">写到第几页（含）</label>'+
+        '<input type="number" id="pcPage" value="'+plannedEnd+'" inputmode="numeric">'+
+        '<div class="modal-note">从第'+startPage+'页开始，自动算完成页数</div>'+
+      '</div>'+
+      '<div id="pcQtyBox" style="margin-top:8px; display:none;">'+
+        '<label class="f" style="margin-top:0;">完成了多少页</label>'+
+        '<input type="number" id="pcQty" value="'+(task.planUnits||0)+'" inputmode="numeric">'+
+      '</div>';
+    openModal({
+      title: "记录完成情况",
+      bodyHTML: body,
+      focusSelector: "#pcPage",
+      buttons: [
+        { label:"取消" },
+        { label:"保存", primary:true, onClick: function(b){
+            var mode = b.querySelector("#pcSeg .on").getAttribute("data-m");
+            var v;
+            if(mode==="page"){
+              var pg = parseInt(b.querySelector("#pcPage").value,10);
+              if(isNaN(pg)) return true;
+              v = pg - startPage + 1;
+            } else {
+              v = parseInt(b.querySelector("#pcQty").value,10);
+              if(isNaN(v)) return true;
+            }
+            onSave(Math.max(0, v));
+          } }
+      ]
+    });
+    document.getElementById("pcSeg").addEventListener("click", function(e){
+      var btn = e.target.closest("button");
+      if(!btn) return;
+      document.querySelectorAll("#pcSeg button").forEach(function(x){ x.classList.remove("on"); });
+      btn.classList.add("on");
+      var m = btn.getAttribute("data-m");
+      document.getElementById("pcPageBox").style.display = m==="page" ? "block" : "none";
+      document.getElementById("pcQtyBox").style.display = m==="qty" ? "block" : "none";
+    });
+  }
+  // make sure today already has an auto-generated task for every active plan
+  function ensureTodayPlanTasks(){
+    var changed = false;
+    state.plans.forEach(function(p){
+      if(p.status==="done") return;
+      if(planRemaining(p) <= 0){ p.status="done"; changed=true; return; }
+      if(TODAY_KEY < p.startDate) return; // not started yet
+      var tasks = getTasks(TODAY_KEY);
+      if(tasks.some(function(t){ return t.planId===p.id; })) return; // already injected today
+      var remaining = planRemaining(p);
+      var daysLeft = planDaysRemaining(p);
+      var chunk = Math.min(remaining, Math.max(1, Math.ceil(remaining/daysLeft)));
+      addTask(TODAY_KEY, planDailyTaskText(p, chunk), p.subjectId, p.id, chunk);
+      changed = true;
+    });
+    if(changed) saveState();
+  }
+
+  function renderPlans(){
+    var activeList = document.getElementById("planActiveList");
+    var doneList = document.getElementById("planDoneList");
+    var doneTitle = document.getElementById("planDoneTitle");
+    activeList.innerHTML = "";
+    doneList.innerHTML = "";
+    var active = state.plans.filter(function(p){ return p.status!=="done"; });
+    var done = state.plans.filter(function(p){ return p.status==="done"; });
+    document.getElementById("planActiveCount").textContent = active.length ? (active.length+" 项") : "";
+
+    if(!active.length){
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "还没有长期任务。比如「把《复习全书》第1–320页在11月20日前读完」";
+      activeList.appendChild(empty);
+    }
+    active.forEach(function(p){ activeList.appendChild(buildPlanCard(p)); });
+
+    doneTitle.style.display = done.length ? "flex" : "none";
+    done.forEach(function(p){ doneList.appendChild(buildPlanCard(p)); });
+  }
+
+  function buildPlanCard(p){
+    var total = planTotal(p);
+    var doneUnits = Math.min(total, p.doneUnits||0);
+    var pct = total>0 ? Math.round((doneUnits/total)*100) : 0;
+    var subj = p.subjectId ? subjectById(p.subjectId) : null;
+    var overdue = planIsOverdue(p);
+    var isDone = p.status==="done";
+
+    var card = document.createElement("div");
+    card.className = "plan-card"+(isDone?" done":"");
+
+    var titleWrap = document.createElement("div");
+    titleWrap.className = "plan-title-wrap";
+    if(subj){
+      var dot = document.createElement("div");
+      dot.className = "dot2";
+      dot.style.cssText += "width:9px;height:9px;border-radius:50%;background:"+subj.color+";";
+      titleWrap.appendChild(dot);
+    }
+    var titleEl = document.createElement("div");
+    titleEl.className = "plan-title";
+    titleEl.textContent = p.title;
+    titleWrap.appendChild(titleEl);
+
+    var actions = document.createElement("div");
+    actions.className = "plan-actions";
+    actions.innerHTML = '<span data-act="edit">✏️</span><span data-act="del">🗑️</span>';
+
+    var head = document.createElement("div");
+    head.className = "plan-head";
+    head.appendChild(titleWrap);
+    head.appendChild(actions);
+    card.appendChild(head);
+
+    var bar = document.createElement("div");
+    bar.className = "plan-bar";
+    bar.innerHTML = '<div style="width:'+pct+'%; background:'+(isDone?"var(--sage)":"var(--teal)")+'"></div>';
+    bar.title = "点击调整已完成进度";
+    card.appendChild(bar);
+
+    var meta = document.createElement("div");
+    meta.className = "plan-meta";
+    var unitLabel = p.type==="pages" ? "页" : (p.unitLabel||"项");
+    meta.textContent = "已完成 "+doneUnits+"/"+total+unitLabel+" · "+pct+"%";
+    card.appendChild(meta);
+
+    var chips = document.createElement("div");
+    chips.className = "plan-chips";
+    if(isDone){
+      chips.innerHTML = '<span class="plan-chip done">🎉 已完成</span>';
+    } else {
+      var daysLeft = daysUntil(p.endDate);
+      var remaining = planRemaining(p);
+      var daysLeftTxt = daysLeft>0 ? ("剩余"+daysLeft+"天") : daysLeft===0 ? "今天截止" : ("已过期"+(-daysLeft)+"天");
+      var todayTask = getTasks(TODAY_KEY).find(function(t){ return t.planId===p.id; });
+      var todayTxt = todayTask ? (todayTask.done ? ("今日已完成 "+todayTask.actualUnits+unitLabel+" ✓") : ("今日目标 "+todayTask.planUnits+unitLabel)) : "";
+      chips.innerHTML =
+        '<span class="plan-chip'+(overdue?" danger":"")+'">'+daysLeftTxt+'</span>'+
+        (todayTxt ? '<span class="plan-chip'+(todayTask.done?" done":"")+'">'+todayTxt+'</span>' : '');
+    }
+    card.appendChild(chips);
+
+    bar.addEventListener("click", function(){
+      numberPromptModal("修改「"+p.title+"」已完成进度（"+unitLabel+"）", doneUnits, function(v){
+        p.doneUnits = Math.max(0, Math.min(total, v));
+        p.status = p.doneUnits>=total ? "done" : "active";
+        saveState();
+        renderPlans();
+      });
+    });
+    actions.querySelector('[data-act="edit"]').addEventListener("click", function(e){
+      e.stopPropagation();
+      openPlanForm(p);
+    });
+    actions.querySelector('[data-act="del"]').addEventListener("click", function(e){
+      e.stopPropagation();
+      confirmModal("删除任务「"+p.title+"」？已经生成的每日记录会保留，但不再继续生成新的。", function(){
+        state.plans = state.plans.filter(function(x){ return x.id!==p.id; });
+        saveState();
+        renderPlans();
+      });
+    });
+    return card;
+  }
+
+  document.getElementById("newPlanBtn").addEventListener("click", function(){ openPlanForm(null); });
+
+  function openPlanForm(existing){
+    var isEdit = !!existing;
+    var subjOptions = '<option value="">不关联科目</option>' + state.subjects.map(function(s){
+      return '<option value="'+s.id+'"'+(existing && existing.subjectId===s.id?" selected":"")+'>'+s.name+'</option>';
+    }).join("");
+    var type = existing ? existing.type : "pages";
+    var body =
+      '<label class="f" style="margin-top:0;">任务名称</label>'+
+      '<input type="text" id="pfTitle" placeholder="如 复习全书 数学一" value="'+(existing?existing.title.replace(/"/g,"&quot;"):"")+'">'+
+      '<label class="f">科目（可选）</label>'+
+      '<select id="pfSubj" style="width:100%;">'+subjOptions+'</select>'+
+      '<label class="f">任务类型</label>'+
+      '<div class="seg" id="pfSeg">'+
+        '<button type="button" data-t="pages" class="'+(type==="pages"?"on":"")+'">页码范围</button>'+
+        '<button type="button" data-t="count" class="'+(type==="count"?"on":"")+'">总量/单位</button>'+
+      '</div>'+
+      '<div id="pfPagesBox" class="form-grid" style="display:'+(type==="pages"?"grid":"none")+';">'+
+        '<div><label class="f">起始页</label><input type="number" id="pfStartPage" value="'+(existing&&existing.type==="pages"?existing.startPage:1)+'"></div>'+
+        '<div><label class="f">结束页</label><input type="number" id="pfEndPage" value="'+(existing&&existing.type==="pages"?existing.endPage:"")+'"></div>'+
+      '</div>'+
+      '<div id="pfCountBox" class="form-grid" style="display:'+(type==="count"?"grid":"none")+';">'+
+        '<div><label class="f">总量</label><input type="number" id="pfTotalUnits" value="'+(existing&&existing.type==="count"?existing.totalUnits:"")+'"></div>'+
+        '<div><label class="f">单位</label><input type="text" id="pfUnitLabel" placeholder="题/章/节" value="'+(existing&&existing.type==="count"?(existing.unitLabel||""):"")+'"></div>'+
+      '</div>'+
+      '<div class="form-grid">'+
+        '<div><label class="f">开始日期</label><input type="date" id="pfStartDate" value="'+(existing?existing.startDate:TODAY_KEY)+'"></div>'+
+        '<div><label class="f">截止日期</label><input type="date" id="pfEndDate" value="'+(existing?existing.endDate:"")+'"></div>'+
+      '</div>'+
+      (isEdit ? '<div class="form-hint">已完成进度："已完成 '+(existing.doneUnits||0)+'" 可以在卡片上点进度条修改。</div>' : '<div class="form-hint">保存后会立即计算今天需要完成多少，并加入今日任务。</div>');
+
+    openModal({
+      title: isEdit ? "编辑任务" : "添加任务",
+      bodyHTML: body,
+      focusSelector: "#pfTitle",
+      buttons: [
+        { label:"取消" },
+        { label: isEdit ? "保存" : "创建", primary:true, onClick: function(body){
+            var title = body.querySelector("#pfTitle").value.trim();
+            var t = body.querySelector("#pfSeg .on").getAttribute("data-t");
+            var startDate = body.querySelector("#pfStartDate").value;
+            var endDate = body.querySelector("#pfEndDate").value;
+            if(!title || !startDate || !endDate) return true;
+            var plan = existing || { id:"p_"+Date.now().toString(36), doneUnits:0, status:"active" };
+            plan.title = title;
+            plan.subjectId = body.querySelector("#pfSubj").value;
+            plan.type = t;
+            plan.startDate = startDate;
+            plan.endDate = endDate;
+            if(t==="pages"){
+              plan.startPage = parseInt(body.querySelector("#pfStartPage").value,10) || 1;
+              plan.endPage = parseInt(body.querySelector("#pfEndPage").value,10) || plan.startPage;
+            } else {
+              plan.totalUnits = parseInt(body.querySelector("#pfTotalUnits").value,10) || 0;
+              plan.unitLabel = body.querySelector("#pfUnitLabel").value.trim() || "项";
+            }
+            if(planRemaining(plan) <= 0){ plan.status="done"; }
+            if(!existing) state.plans.push(plan);
+
+            // if editing and today's auto task for this plan isn't done yet, drop it so it regenerates with fresh numbers
+            var todayTasks = getTasks(TODAY_KEY);
+            var idx = todayTasks.findIndex(function(x){ return x.planId===plan.id && !x.done; });
+            if(idx>-1) todayTasks.splice(idx,1);
+
+            saveState();
+            ensureTodayPlanTasks();
+            renderPlans();
+            if(document.querySelector('[data-view="today"]').classList.contains("active")){
+              renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
+              renderStats();
+            }
+          } }
+      ]
+    });
+    document.getElementById("pfSeg").addEventListener("click", function(e){
+      var btn = e.target.closest("button");
+      if(!btn) return;
+      document.querySelectorAll("#pfSeg button").forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      var t = btn.getAttribute("data-t");
+      document.getElementById("pfPagesBox").style.display = t==="pages" ? "grid" : "none";
+      document.getElementById("pfCountBox").style.display = t==="count" ? "grid" : "none";
+    });
+  }
+
+  /* ---------- stats / streak ---------- */
+  function bumpStreakIfNeeded(){
+    // called when focus time or a task completion happens today
+    if(state.lastCheckDate === TODAY_KEY) return;
+    var y = new Date(); y.setDate(y.getDate()-1);
+    var yesterdayKey = ymd(y);
+    if(state.lastCheckDate === yesterdayKey){
+      state.streak += 1;
+    } else {
+      state.streak = 1;
+    }
+    state.lastCheckDate = TODAY_KEY;
+    if(state.streak > state.bestStreak) state.bestStreak = state.streak;
+    saveState();
+  }
+
+  function renderStats(){
+    document.getElementById("statFocusToday").textContent = state.focusByDate[TODAY_KEY] || 0;
+    document.getElementById("statStreak").textContent = state.streak || 0;
+    var tasks = getTasks(TODAY_KEY);
+    var done = tasks.filter(function(t){return t.done;}).length;
+    document.getElementById("statDone").textContent = done+"/"+tasks.length;
+  }
+  function setTodayFocusMinutes(newVal){
+    if(newVal < 0) newVal = 0;
+    var old = state.focusByDate[TODAY_KEY] || 0;
+    var delta = newVal - old;
+    state.focusByDate[TODAY_KEY] = newVal;
+    state.totalFocusMinutes = Math.max(0, (state.totalFocusMinutes||0) + delta);
+    saveState();
+    renderStats();
+    renderWeekChart();
+    renderHeatmap();
+    renderProfile();
+  }
+  document.getElementById("statFocusTodayCard").addEventListener("click", function(){
+    numberPromptModal("修改今日专注时长（分钟）", state.focusByDate[TODAY_KEY]||0, function(v){
+      setTodayFocusMinutes(v);
+    });
+  });
+
+  /* ---------- focus timer ---------- */
+  var FOCUS_MINUTES = state.profile.pomodoroMinutes || 25;
+  var FOCUS_SECONDS = FOCUS_MINUTES*60;
+  var timerRemaining = FOCUS_SECONDS;
+  var timerRunning = false;
+  var timerHandle = null;
+  var ringFg = document.getElementById("ringFg");
+  var CIRC = 2*Math.PI*45;
+  ringFg.setAttribute("stroke-dasharray", CIRC.toFixed(1));
+
+  function formatTime(s){
+    var m = Math.floor(s/60), sec = s%60;
+    return pad(m)+":"+pad(sec);
+  }
+  function renderTimer(){
+    document.getElementById("timerDisplay").textContent = formatTime(timerRemaining);
+    var progress = 1 - (timerRemaining/FOCUS_SECONDS);
+    ringFg.setAttribute("stroke-dashoffset", (CIRC*(1-progress)).toFixed(1));
+    document.getElementById("timerState").textContent = timerRunning ? "专注中…" : (timerRemaining<FOCUS_SECONDS ? "已暂停" : ("未开始 · "+FOCUS_MINUTES+" 分钟一段"));
+    document.getElementById("timerToggle").textContent = timerRunning ? "暂停" : (timerRemaining<FOCUS_SECONDS ? "继续" : "开始专注");
+  }
+  function tick(){
+    timerRemaining -= 1;
+    if(timerRemaining <= 0){
+      completeFocusSession();
+      return;
+    }
+    renderTimer();
+  }
+  function completeFocusSession(){
+    clearInterval(timerHandle);
+    timerHandle = null;
+    timerRunning = false;
+    var mins = FOCUS_MINUTES;
+    timerRemaining = 0;
+    renderTimer();
+    logFocusMinutes(mins);
+    timerRemaining = FOCUS_SECONDS;
+    setTimeout(renderTimer, 600);
+  }
+  function logFocusMinutes(mins){
+    state.focusByDate[TODAY_KEY] = (state.focusByDate[TODAY_KEY]||0) + mins;
+    state.totalFocusMinutes = (state.totalFocusMinutes||0) + mins;
+    bumpStreakIfNeeded();
+    var timerSubjEl = document.getElementById("timerSubj");
+    var subjId = (timerSubjEl && timerSubjEl.value) || (state.subjects[0] && state.subjects[0].id);
+    if(subjId){
+      state.focusBySubjectWeek[subjId] = (state.focusBySubjectWeek[subjId]||0) + mins;
+    }
+    saveState();
+    renderStats();
+    renderStudy();
+    renderHeatmap();
+  }
+  document.getElementById("timerToggle").addEventListener("click", function(){
+    if(timerRunning){
+      timerRunning = false;
+      clearInterval(timerHandle);
+      renderTimer();
+    } else {
+      timerRunning = true;
+      timerHandle = setInterval(tick, 1000);
+      renderTimer();
+    }
+  });
+  document.getElementById("timerReset").addEventListener("click", function(){
+    timerRunning = false;
+    clearInterval(timerHandle);
+    timerRemaining = FOCUS_SECONDS;
+    renderTimer();
+  });
+
+  function setFocusMinutes(mins){
+    if(timerRunning) return;
+    FOCUS_MINUTES = mins;
+    FOCUS_SECONDS = mins*60;
+    timerRemaining = FOCUS_SECONDS;
+    state.profile.pomodoroMinutes = mins;
+    saveState();
+    renderTimer();
+    renderDurChips();
+  }
+  function renderDurChips(){
+    document.querySelectorAll("#durChips .dur-chip").forEach(function(btn){
+      var m = btn.getAttribute("data-m");
+      if(m==="custom"){
+        btn.classList.toggle("on", ![15,25,35,45,50].includes(FOCUS_MINUTES));
+      } else {
+        btn.classList.toggle("on", parseInt(m,10)===FOCUS_MINUTES);
+      }
+    });
+  }
+  document.getElementById("durChips").addEventListener("click", function(e){
+    var btn = e.target.closest(".dur-chip");
+    if(!btn) return;
+    var m = btn.getAttribute("data-m");
+    if(m==="custom"){
+      numberPromptModal("自定义专注时长（分钟）", FOCUS_MINUTES, function(n){
+        if(n && n>0 && n<=180) setFocusMinutes(n);
+      });
+      return;
+    }
+    setFocusMinutes(parseInt(m,10));
+  });
+
+  /* ---------- calendar ---------- */
+  var calCursor = todayDate();
+  var calSelected = TODAY_KEY;
+  function renderCalendar(){
+    var y = calCursor.getFullYear(), m = calCursor.getMonth();
+    document.getElementById("calMonthLabel").textContent = y+"年 "+MONTHS[m];
+    var grid = document.getElementById("calGrid");
+    grid.innerHTML = "";
+    var first = new Date(y,m,1);
+    var startOffset = first.getDay();
+    var daysInMonth = new Date(y,m+1,0).getDate();
+    var daysInPrev = new Date(y,m,0).getDate();
+    var cells = [];
+    for(var i=0;i<startOffset;i++){
+      cells.push({ d: daysInPrev-startOffset+1+i, other:true });
+    }
+    for(var d=1; d<=daysInMonth; d++){
+      cells.push({ d:d, other:false, key: y+"-"+pad(m+1)+"-"+pad(d) });
+    }
+    while(cells.length % 7 !== 0){
+      cells.push({ d: cells.length - (startOffset+daysInMonth) + 1, other:true });
+    }
+    cells.forEach(function(c){
+      var el = document.createElement("div");
+      el.className = "day"+(c.other?" other":"");
+      if(!c.other){
+        if(c.key === TODAY_KEY) el.classList.add("today");
+        if(c.key === calSelected) el.classList.add("sel");
+      }
+      el.innerHTML = "<div>"+c.d+"</div>";
+      if(!c.other && state.tasksByDate[c.key] && state.tasksByDate[c.key].length){
+        var dot = document.createElement("div");
+        dot.className = "dot";
+        el.appendChild(dot);
+      }
+      if(!c.other){
+        el.addEventListener("click", function(){
+          calSelected = c.key;
+          renderCalendar();
+          renderCalDay();
+        });
+      }
+      grid.appendChild(el);
+    });
+  }
+  function renderCalDay(){
+    var label = document.getElementById("calSelLabel");
+    label.textContent = calSelected === TODAY_KEY ? "今天的安排" : calSelected+" 的安排";
+    renderTaskListInto(document.getElementById("calTaskList"), calSelected, null);
+  }
+  document.getElementById("calPrev").addEventListener("click", function(){
+    calCursor = new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1);
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", function(){
+    calCursor = new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1);
+    renderCalendar();
+  });
+  document.getElementById("calToday").addEventListener("click", function(){
+    calCursor = todayDate();
+    calSelected = TODAY_KEY;
+    renderCalendar();
+    renderCalDay();
+  });
+  document.getElementById("calAddBtn").addEventListener("click", function(){
+    var inp = document.getElementById("calNewTask");
+    var subjSel = document.getElementById("calNewTaskSubj");
+    addTask(calSelected, inp.value, subjSel.value);
+    inp.value = "";
+    renderCalDay();
+    renderCalendar();
+    if(calSelected===TODAY_KEY){ renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl); renderStats(); }
+  });
+  document.getElementById("calNewTask").addEventListener("keydown", function(e){
+    if(e.key==="Enter") document.getElementById("calAddBtn").click();
+  });
+
+  /* ---------- study/subjects ---------- */
+  function subjColor(idx){
+    var palette = ["var(--teal)","var(--amber)","var(--sage)","#9B7EC9","#C9636E","#5B8FBF"];
+    return palette[idx % palette.length];
+  }
+  function renderStudy(){
+    var listEl = document.getElementById("subjList");
+    listEl.innerHTML = "";
+    var maxMin = Math.max(60, 1, Math.max.apply(null, state.subjects.map(function(s){ return state.focusBySubjectWeek[s.id]||0; }).concat([1])));
+    state.subjects.forEach(function(s, idx){
+      var mins = state.focusBySubjectWeek[s.id] || 0;
+      var pct = Math.min(100, Math.round((mins/maxMin)*100));
+      var row = document.createElement("div");
+      row.className = "subj editable-subj";
+      row.innerHTML =
+        '<div class="dot2" style="background:'+subjColor(idx)+'"></div>'+
+        '<div class="body"><div class="name"></div><div class="bar"><div style="width:'+pct+'%; background:'+subjColor(idx)+'"></div></div><div class="mins"></div></div>'+
+        '<div class="edit-ic">✏️</div>';
+      row.querySelector(".name").textContent = s.name;
+      row.querySelector(".mins").textContent = mins+" 分钟 · 本周";
+      row.addEventListener("click", function(){
+        numberPromptModal("修改「"+s.name+"」本周时长（分钟）", state.focusBySubjectWeek[s.id]||0, function(v){
+          state.focusBySubjectWeek[s.id] = Math.max(0, v);
+          saveState();
+          renderStudy();
+        });
+      });
+      listEl.appendChild(row);
+    });
+
+    // populate subject selects
+    function fillSubjSelect(id, withBlank){
+      var tsel = document.getElementById(id);
+      if(!tsel) return;
+      var prev = tsel.value;
+      tsel.innerHTML = "";
+      if(withBlank){
+        var blank = document.createElement("option");
+        blank.value = ""; blank.textContent = "科目";
+        tsel.appendChild(blank);
+      }
+      state.subjects.forEach(function(s){
+        var opt = document.createElement("option");
+        opt.value = s.id; opt.textContent = s.name;
+        tsel.appendChild(opt);
+      });
+      if(prev) tsel.value = prev;
+    }
+    fillSubjSelect("logSubj", false);
+    fillSubjSelect("timerSubj", false);
+    fillSubjSelect("newTaskSubj", true);
+    fillSubjSelect("calNewTaskSubj", true);
+
+    // manage list
+    var mgmt = document.getElementById("subjManageList");
+    mgmt.innerHTML = "";
+    if(!state.subjects.length){
+      var empty = document.createElement("div"); empty.className="empty"; empty.textContent="还没有科目";
+      mgmt.appendChild(empty);
+    }
+    state.subjects.forEach(function(s, idx){
+      var row = document.createElement("div");
+      row.className = "task";
+      row.innerHTML = '<div class="dot2" style="background:'+subjColor(idx)+'; width:10px;height:10px;border-radius:50%;"></div><div class="txt"></div><div class="del">✕</div>';
+      row.querySelector(".txt").textContent = s.name;
+      row.querySelector(".del").addEventListener("click", function(){
+        state.subjects.splice(idx,1);
+        delete state.focusBySubjectWeek[s.id];
+        saveState();
+        renderStudy();
+      });
+      mgmt.appendChild(row);
+    });
+
+    renderWeekChart();
+  }
+
+  function renderWeekChart(){
+    var wrap = document.getElementById("weekChart");
+    if(!wrap) return;
+    wrap.innerHTML = "";
+    var days = [];
+    for(var i=6;i>=0;i--){
+      var d = new Date(); d.setDate(d.getDate()-i);
+      days.push({ key: ymd(d), label: WEEKDAYS[d.getDay()].replace("周",""), isToday: ymd(d)===TODAY_KEY });
+    }
+    var max = Math.max(30, 1, Math.max.apply(null, days.map(function(d){ return state.focusByDate[d.key]||0; })));
+    days.forEach(function(d){
+      var mins = state.focusByDate[d.key] || 0;
+      var pct = Math.max(mins>0?6:0, Math.round((mins/max)*100));
+      var col = document.createElement("div");
+      col.className = "bar-col";
+      col.innerHTML = '<div class="v"></div><div class="b'+(d.isToday?" today":"")+'" style="height:'+pct+'%"></div><div class="d"></div>';
+      col.querySelector(".v").textContent = mins>0 ? mins : "";
+      col.querySelector(".d").textContent = d.label;
+      wrap.appendChild(col);
+    });
+  }
+  document.getElementById("logBtn").addEventListener("click", function(){
+    var mins = parseInt(document.getElementById("logMins").value, 10);
+    if(!mins || mins<=0) return;
+    var subjId = document.getElementById("logSubj").value;
+    state.focusBySubjectWeek[subjId] = (state.focusBySubjectWeek[subjId]||0) + mins;
+    state.focusByDate[TODAY_KEY] = (state.focusByDate[TODAY_KEY]||0) + mins;
+    state.totalFocusMinutes = (state.totalFocusMinutes||0) + mins;
+    bumpStreakIfNeeded();
+    saveState();
+    document.getElementById("logMins").value = "";
+    renderStudy();
+    renderStats();
+    renderHeatmap();
+  });
+  document.getElementById("addSubjBtn").addEventListener("click", function(){
+    var inp = document.getElementById("newSubj");
+    var name = inp.value.trim();
+    if(!name) return;
+    var id = "s_"+Date.now().toString(36);
+    state.subjects.push({ id:id, name:name });
+    inp.value = "";
+    saveState();
+    renderStudy();
+  });
+  document.getElementById("newSubj").addEventListener("keydown", function(e){
+    if(e.key==="Enter") document.getElementById("addSubjBtn").click();
+  });
+
+  /* ---------- profile ---------- */
+  function renderProfile(){
+    document.getElementById("profName").textContent = state.profile.name || "研友";
+    document.getElementById("profSub").textContent = state.profile.target ? ("目标 · "+state.profile.target) : "考研倒计时中";
+    document.getElementById("setTarget").value = state.profile.target || "";
+    document.getElementById("setDailyGoal").value = state.profile.dailyGoal || 180;
+    document.getElementById("profTotalHours").textContent = (Math.round((state.totalFocusMinutes||0)/6)/10);
+    document.getElementById("profBestStreak").textContent = state.bestStreak || 0;
+    document.getElementById("profDoneTasks").textContent = state.totalDoneTasks || 0;
+    renderCdManageList();
+    renderHeatmap();
+  }
+  function renderCdManageList(){
+    var el = document.getElementById("cdManageList");
+    el.innerHTML = "";
+    var list = (state.countdowns||[]).slice().sort(function(a,b){ return daysUntil(a.date)-daysUntil(b.date); });
+    if(!list.length){
+      var empty = document.createElement("div"); empty.className="empty"; empty.textContent="还没有添加重要日期";
+      el.appendChild(empty);
+    }
+    list.forEach(function(c){
+      var row = document.createElement("div");
+      row.className = "task";
+      row.innerHTML = '<div class="pin" style="cursor:pointer; flex:none; font-size:15px;"></div><div class="txt"></div><div class="del">✕</div>';
+      row.querySelector(".pin").textContent = c.pinned ? "📌" : "📍";
+      row.querySelector(".pin").title = "设为首页显示的倒计时";
+      row.querySelector(".txt").textContent = c.label+" · "+c.date;
+      row.querySelector(".pin").addEventListener("click", function(){
+        state.countdowns.forEach(function(x){ x.pinned = (x.id===c.id) ? !c.pinned : false; });
+        saveState();
+        renderCdManageList();
+        renderCountdown();
+      });
+      row.querySelector(".del").addEventListener("click", function(){
+        state.countdowns = state.countdowns.filter(function(x){ return x.id!==c.id; });
+        saveState();
+        renderCdManageList();
+        renderCountdown();
+      });
+      el.appendChild(row);
+    });
+  }
+  document.getElementById("addCdBtn").addEventListener("click", function(){
+    var labelInp = document.getElementById("newCdLabel");
+    var dateInp = document.getElementById("newCdDate");
+    var label = labelInp.value.trim();
+    var date = dateInp.value;
+    if(!label || !date) return;
+    state.countdowns.push({ id:"cd_"+Date.now().toString(36), label:label, date:date, pinned:false });
+    labelInp.value = ""; dateInp.value = "";
+    saveState();
+    renderCdManageList();
+    renderCountdown();
+  });
+  function renderHeatmap(){
+    var el = document.getElementById("heatmap");
+    if(!el) return;
+    el.innerHTML = "";
+    var WEEKS = 20;
+    var totalDays = WEEKS*7;
+    var start = new Date();
+    start.setDate(start.getDate() - (totalDays-1) - start.getDay());
+    for(var i=0;i<totalDays;i++){
+      var d = new Date(start);
+      d.setDate(start.getDate()+i);
+      var key = ymd(d);
+      var mins = state.focusByDate[key] || 0;
+      var level = mins<=0 ? 0 : mins<30 ? 1 : mins<60 ? 2 : mins<120 ? 3 : 4;
+      var cell = document.createElement("div");
+      cell.className = "hc"+(level>0?" l"+level:"");
+      cell.title = key+" · "+mins+"分钟";
+      el.appendChild(cell);
+    }
+  }
+  document.getElementById("saveProfBtn").addEventListener("click", function(){
+    state.profile.target = document.getElementById("setTarget").value.trim();
+    var dg = parseInt(document.getElementById("setDailyGoal").value,10);
+    state.profile.dailyGoal = dg || 180;
+    saveState();
+    renderProfile();
+    renderCountdown();
+  });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    confirmModal("确定要清空全部数据吗？此操作无法撤销。", function(){
+      state = JSON.parse(JSON.stringify(defaultState));
+      saveState();
+      location.reload();
+    });
+  });
+  function doImport(parsed){
+    var merged = JSON.parse(JSON.stringify(defaultState));
+    for(var k in parsed){ merged[k]=parsed[k]; }
+    state = merged;
+    saveState();
+    location.reload();
+  }
+  function copyText(text, btn){
+    var done = function(ok){
+      if(!btn) return;
+      btn.textContent = ok ? "已复制 ✓" : "复制失败，请长按手动选择";
+      setTimeout(function(){ btn.textContent = "复制"; }, 1800);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      done(!!ok);
+    }catch(e){ done(false); }
+  }
+  document.getElementById("exportBtn").addEventListener("click", function(){
+    var json = JSON.stringify(state, null, 2);
+    var downloadOk = false;
+    try{
+      var blob = new Blob([json], { type:"application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "灯下备份_"+TODAY_KEY+".json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      downloadOk = true;
+    }catch(e){ downloadOk = false; }
+
+    openModal({
+      title: "导出备份",
+      bodyHTML:
+        '<div class="modal-note">'+(downloadOk ? "已尝试下载备份文件；如果没有弹出保存提示，也可以直接复制下面的内容，粘贴到备忘录或文件里保存。" : "当前环境不支持直接下载文件，请复制下面的内容并粘贴保存。")+'</div>'+
+        '<textarea id="exportText" readonly></textarea>',
+      buttons: [
+        { label:"关闭" },
+        { label:"复制", primary:true, onClick: function(body, btn){
+            copyText(json, btn);
+            return true;
+          } }
+      ]
+    });
+    document.getElementById("exportText").value = json;
+  });
+  document.getElementById("importBtn").addEventListener("click", function(){
+    openModal({
+      title: "导入备份",
+      bodyHTML:
+        '<div class="modal-note">粘贴之前导出的备份内容到下面，或选择备份文件。导入会覆盖当前数据。</div>'+
+        '<textarea id="importText" placeholder="粘贴备份 JSON 内容…"></textarea>'+
+        '<div style="margin-top:10px;"><button class="btn btn-ghost" id="pickFileBtn" type="button">选择文件</button></div>',
+      buttons: [
+        { label:"取消" },
+        { label:"导入", primary:true, onClick: function(body){
+            var text = body.querySelector("#importText").value.trim();
+            if(!text){ return true; }
+            try{
+              var parsed = JSON.parse(text);
+              confirmModal("导入将覆盖当前数据，确定继续吗？", function(){ doImport(parsed); });
+              return true;
+            }catch(e){
+              alertModal("这段内容不是有效的备份数据，请检查后重试。");
+              return true;
+            }
+          } }
+      ]
+    });
+    document.getElementById("pickFileBtn").addEventListener("click", function(){
+      document.getElementById("importFile").click();
+    });
+  });
+  document.getElementById("importFile").addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var parsed = JSON.parse(reader.result);
+        confirmModal("导入将覆盖当前数据，确定继续吗？", function(){ doImport(parsed); });
+      }catch(err){
+        alertModal("这个文件看起来不是有效的备份文件");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  /* ---------- init ---------- */
+  ensureTodayPlanTasks();
+  renderCountdown();
+  renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
+  renderStats();
+  renderTimer();
+  renderDurChips();
+  renderCalendar();
+  renderCalDay();
+  renderStudy();
+  renderProfile();
+
+})();
+</script>
+</body>
+</html>
