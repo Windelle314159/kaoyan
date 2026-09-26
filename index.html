@@ -261,15 +261,15 @@
   .modal-body{ font-size:14px; color:var(--ink); line-height:1.6; }
   .modal-body input[type=number], .modal-body input[type=text]{
     width:100%; border:1px solid var(--line); background:var(--paper); border-radius:10px;
-    padding:9px 12px; font-size:15px; color:var(--ink); font-family:inherit; margin-top:8px;
+    padding:9px 12px; font-size:16px; color:var(--ink); font-family:inherit; margin-top:8px;
   }
   .modal-body textarea{
     width:100%; min-height:110px; border:1px solid var(--line); background:var(--paper);
-    border-radius:10px; padding:9px 12px; font-size:12.5px; color:var(--ink); font-family:monospace;
+    border-radius:10px; padding:9px 12px; font-size:16px; color:var(--ink); font-family:monospace;
     margin-top:8px; resize:vertical;
   }
   .modal-note{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
-  .modal-btns{ display:flex; gap:8px; margin-top:16px; justify-content:flex-end; }
+  .modal-btns{ display:flex; gap:8px; margin-top:16px; justify-content:flex-end; flex-wrap:wrap; }
   .modal-btns .btn{ flex:none; }
   .add-row{ display:flex; gap:8px; margin-top:10px; }
   .add-row input{
@@ -278,7 +278,7 @@
     background:var(--paper);
     border-radius:10px;
     padding:9px 12px;
-    font-size:14.5px;
+    font-size:16px;
     color:var(--ink);
     font-family:inherit;
   }
@@ -384,7 +384,7 @@
   .select-row, .form-row{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
   select, .num-input{
     border:1px solid var(--line); background:var(--paper); border-radius:10px;
-    padding:9px 10px; font-size:14px; color:var(--ink); font-family:inherit;
+    padding:9px 10px; font-size:16px; color:var(--ink); font-family:inherit;
   }
   .num-input{ width:76px; }
 
@@ -392,7 +392,7 @@
   input[type=text], input[type=date], input[type=number]{
     width:100%;
     border:1px solid var(--line); background:var(--paper); border-radius:10px;
-    padding:10px 12px; font-size:14.5px; color:var(--ink); font-family:inherit;
+    padding:10px 12px; font-size:16px; color:var(--ink); font-family:inherit;
   }
 
   /* bottom nav */
@@ -414,6 +414,13 @@
   .nav button.on{ color:var(--teal); }
 
   .row-between{ display:flex; align-items:center; justify-content:space-between; }
+  .mini-link{
+    font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+    padding:2px 4px;
+  }
+  .mini-link:active{ color:var(--teal); }
+  #cdManageList .del{ opacity:0.32; }
+  #cdManageList .del:active{ opacity:0.8; }
   .heatmap-scroll{ overflow-x:auto; padding-bottom:4px; }
   .heatmap{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,10px); gap:3px; width:max-content; }
   .heatmap .hc{ width:10px; height:10px; border-radius:2.5px; background:var(--line); }
@@ -492,19 +499,6 @@
           <select id="timerSubj"></select>
         </div>
       </div>
-
-      <div class="section-title">
-        今日任务
-        <span class="muted" id="taskCount"></span>
-      </div>
-      <div class="card">
-        <div id="taskList"></div>
-        <div class="add-row">
-          <select id="newTaskSubj" style="flex:none;"></select>
-          <input type="text" id="newTask" placeholder="添加一项今日任务…" maxlength="60">
-          <button class="btn btn-teal" id="addTaskBtn">添加</button>
-        </div>
-      </div>
     </section>
 
     <!-- 日历 -->
@@ -527,7 +521,7 @@
         <div id="calTaskList"></div>
         <div class="add-row">
           <select id="calNewTaskSubj" style="flex:none;"></select>
-          <input type="text" id="calNewTask" placeholder="为这一天添加安排…" maxlength="60">
+          <input type="text" id="calNewTask" placeholder="添加安排…" maxlength="60">
           <button class="btn btn-teal" id="calAddBtn">添加</button>
         </div>
       </div>
@@ -542,7 +536,7 @@
       <div id="planActiveList"></div>
 
       <div class="card" style="margin-top:12px;">
-        <button class="btn btn-teal" id="newPlanBtn" style="width:100%;">＋ 添加任务</button>
+        <button class="btn btn-ghost" id="newPlanBtn" style="width:100%;">＋ 添加任务</button>
       </div>
 
       <div class="section-title" id="planDoneTitle" style="display:none;">已完成</div>
@@ -561,14 +555,18 @@
         <div id="subjList"></div>
       </div>
 
-      <div class="section-title">记录学习时长</div>
+      <div class="section-title">打卡记录</div>
       <div class="card">
-        <div class="form-row">
-          <select id="logSubj"></select>
-          <input class="num-input" type="number" id="logMins" placeholder="分钟" min="1" max="600">
-          <button class="btn btn-sage" id="logBtn">记录</button>
+        <div class="heatmap-scroll"><div id="heatmap" class="heatmap"></div></div>
+        <div class="heatmap-legend">
+          <span>少</span>
+          <span class="hm-sw" data-l="0"></span>
+          <span class="hm-sw" data-l="1"></span>
+          <span class="hm-sw" data-l="2"></span>
+          <span class="hm-sw" data-l="3"></span>
+          <span class="hm-sw" data-l="4"></span>
+          <span>多</span>
         </div>
-        <div class="muted" style="margin-top:8px;">专注计时结束后也会自动计入所选科目</div>
       </div>
 
       <div class="section-title">
@@ -579,6 +577,16 @@
         <div class="add-row">
           <input type="text" id="newSubj" placeholder="添加科目，如 专业课·化工原理" maxlength="30">
           <button class="btn btn-teal" id="addSubjBtn">添加</button>
+        </div>
+      </div>
+
+      <div class="section-title">记录学习时长</div>
+      <div class="card">
+        <div class="muted" style="margin-bottom:8px;">专注计时结束后会自动计入所选科目，这里用于手动补记</div>
+        <div class="form-row">
+          <select id="logSubj"></select>
+          <input class="num-input" type="number" id="logMins" placeholder="分钟" min="1" max="600">
+          <button class="btn btn-sage" id="logBtn">记录</button>
         </div>
       </div>
     </section>
@@ -594,40 +602,20 @@
         </div>
       </div>
 
-      <div class="section-title">目标设置</div>
-      <div class="card">
-        <label class="f">目标院校 · 专业</label>
-        <input type="text" id="setTarget" placeholder="如 武汉理工大学 · 化学工程">
-        <label class="f">每日专注目标（分钟）</label>
-        <input type="number" id="setDailyGoal" min="10" max="720">
-        <div style="margin-top:14px;">
-          <button class="btn btn-teal" id="saveProfBtn">保存设置</button>
-        </div>
+      <div class="section-title">
+        重要日期
+        <span class="mini-link" id="cdAddToggle">＋ 添加</span>
       </div>
-
-      <div class="section-title">重要日期</div>
       <div class="card">
         <div id="cdManageList"></div>
-        <div class="form-row">
-          <input type="text" id="newCdLabel" placeholder="名称，如 考研初试" style="flex:1; min-width:110px;">
-          <input type="date" id="newCdDate" style="flex:1; min-width:130px;">
-        </div>
-        <div style="margin-top:8px;">
-          <button class="btn btn-teal" id="addCdBtn">添加日期</button>
-        </div>
-      </div>
-
-      <div class="section-title">打卡记录</div>
-      <div class="card">
-        <div class="heatmap-scroll"><div id="heatmap" class="heatmap"></div></div>
-        <div class="heatmap-legend">
-          <span>少</span>
-          <span class="hm-sw" data-l="0"></span>
-          <span class="hm-sw" data-l="1"></span>
-          <span class="hm-sw" data-l="2"></span>
-          <span class="hm-sw" data-l="3"></span>
-          <span class="hm-sw" data-l="4"></span>
-          <span>多</span>
+        <div id="cdAddForm" style="display:none; margin-top:10px;">
+          <div class="form-row">
+            <input type="text" id="newCdLabel" placeholder="名称，如 考研初试" style="flex:1; min-width:110px;">
+            <input type="date" id="newCdDate" style="flex:1; min-width:130px;">
+          </div>
+          <div style="margin-top:8px;">
+            <button class="btn btn-teal" id="addCdBtn">添加日期</button>
+          </div>
         </div>
       </div>
 
@@ -640,11 +628,22 @@
         </div>
       </div>
 
+      <div class="section-title">目标设置</div>
+      <div class="card">
+        <label class="f" style="margin-top:0;">目标院校 · 专业</label>
+        <input type="text" id="setTarget" placeholder="如 武汉理工大学 · 化学工程">
+        <label class="f">每日专注目标（分钟）</label>
+        <input type="number" id="setDailyGoal" min="10" max="720">
+        <div style="margin-top:14px;">
+          <button class="btn btn-ghost" id="saveProfBtn">保存设置</button>
+        </div>
+      </div>
+
       <div class="section-title">数据管理</div>
       <div class="card">
         <div class="muted">数据只保存在本设备的浏览器里，换设备或清理浏览器数据前，建议先导出备份。</div>
         <div class="form-row">
-          <button class="btn btn-teal" id="exportBtn">导出备份</button>
+          <button class="btn btn-ghost" id="exportBtn">导出备份</button>
           <button class="btn btn-ghost" id="importBtn">导入备份</button>
           <button class="btn btn-ghost" id="resetBtn">清空重置</button>
         </div>
@@ -655,7 +654,7 @@
   </div>
 
   <div class="nav">
-    <button class="on" data-nav="today"><span class="ic">☀️</span>今日</button>
+    <button class="on" data-nav="today"><span class="ic">⏱️</span>专注</button>
     <button data-nav="calendar"><span class="ic">🗓️</span>日历</button>
     <button data-nav="plans"><span class="ic">📋</span>任务</button>
     <button data-nav="study"><span class="ic">📘</span>学习</button>
@@ -975,20 +974,6 @@
     saveState();
   }
 
-  var taskListEl = document.getElementById("taskList");
-  var taskCountEl = document.getElementById("taskCount");
-  document.getElementById("addTaskBtn").addEventListener("click", function(){
-    var inp = document.getElementById("newTask");
-    var subjSel = document.getElementById("newTaskSubj");
-    addTask(TODAY_KEY, inp.value, subjSel.value);
-    inp.value = "";
-    renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
-    renderStats();
-  });
-  document.getElementById("newTask").addEventListener("keydown", function(e){
-    if(e.key==="Enter") document.getElementById("addTaskBtn").click();
-  });
-
   /* ---------- plans (long-term tasks with auto daily breakdown) ---------- */
   function planTotal(p){
     return p.type==="pages" ? Math.max(0, (p.endPage - p.startPage + 1)) : Math.max(0, p.totalUnits||0);
@@ -1034,9 +1019,11 @@
         '<button type="button" data-m="qty">按页数</button>'+
       '</div>'+
       '<div id="pcPageBox" style="margin-top:8px;">'+
-        '<label class="f" style="margin-top:0;">写到第几页（含）</label>'+
-        '<input type="number" id="pcPage" value="'+plannedEnd+'" inputmode="numeric">'+
-        '<div class="modal-note">从第'+startPage+'页开始，自动算完成页数</div>'+
+        '<div class="form-grid">'+
+          '<div><label class="f" style="margin-top:0;">起始页</label><input type="number" id="pcFrom" value="'+startPage+'" inputmode="numeric"></div>'+
+          '<div><label class="f" style="margin-top:0;">写到第几页</label><input type="number" id="pcPage" value="'+plannedEnd+'" inputmode="numeric"></div>'+
+        '</div>'+
+        '<div class="modal-note">起始页默认按计划推算，如果这次是跳着写的可以改</div>'+
       '</div>'+
       '<div id="pcQtyBox" style="margin-top:8px; display:none;">'+
         '<label class="f" style="margin-top:0;">完成了多少页</label>'+
@@ -1053,8 +1040,9 @@
             var v;
             if(mode==="page"){
               var pg = parseInt(b.querySelector("#pcPage").value,10);
-              if(isNaN(pg)) return true;
-              v = pg - startPage + 1;
+              var fromPg = parseInt(b.querySelector("#pcFrom").value,10);
+              if(isNaN(pg) || isNaN(fromPg)) return true;
+              v = pg - fromPg + 1;
             } else {
               v = parseInt(b.querySelector("#pcQty").value,10);
               if(isNaN(v)) return true;
@@ -1073,6 +1061,83 @@
       document.getElementById("pcQtyBox").style.display = m==="qty" ? "block" : "none";
     });
   }
+  // additive progress log, separate from the day's single auto-task — lets you log
+  // more than once per day (e.g. you continued where you left off AND separately
+  // jumped ahead to read something else in the same sitting)
+  function openPlanAddModal(p){
+    var unitLabel = p.type==="pages" ? "页" : (p.unitLabel||"项");
+    if(p.type!=="pages"){
+      openModal({
+        title: "补记「"+p.title+"」进度",
+        bodyHTML: '<input type="number" id="paQty" placeholder="这次完成了多少'+unitLabel+'" inputmode="numeric">',
+        focusSelector: "#paQty",
+        buttons: [
+          { label:"取消" },
+          { label:"添加", primary:true, onClick: function(b){
+              var v = parseInt(b.querySelector("#paQty").value,10);
+              if(isNaN(v) || v<=0) return true;
+              adjustPlanProgress(p.id, v);
+              saveState();
+              regenerateTodayPlanTask(p.id);
+              renderPlans();
+            } }
+        ]
+      });
+      return;
+    }
+    var pointer = p.startPage + (p.doneUnits||0);
+    var body =
+      '<div class="modal-note">继续接着写，或者另外跳着写了一段，都可以在这里补记一次，可以反复添加。</div>'+
+      '<div class="seg" id="paSeg">'+
+        '<button type="button" data-m="page" class="on">写到第几页</button>'+
+        '<button type="button" data-m="qty">直接加页数</button>'+
+      '</div>'+
+      '<div id="paPageBox" style="margin-top:8px;">'+
+        '<div class="form-grid">'+
+          '<div><label class="f" style="margin-top:0;">起始页</label><input type="number" id="paFrom" value="'+pointer+'" inputmode="numeric"></div>'+
+          '<div><label class="f" style="margin-top:0;">写到第几页</label><input type="number" id="paTo" value="'+pointer+'" inputmode="numeric"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div id="paQtyBox" style="margin-top:8px; display:none;">'+
+        '<label class="f" style="margin-top:0;">加多少页</label>'+
+        '<input type="number" id="paQty2" placeholder="0" inputmode="numeric">'+
+      '</div>';
+    openModal({
+      title: "补记「"+p.title+"」进度",
+      bodyHTML: body,
+      focusSelector: "#paTo",
+      buttons: [
+        { label:"取消" },
+        { label:"添加", primary:true, onClick: function(b){
+            var mode = b.querySelector("#paSeg .on").getAttribute("data-m");
+            var v;
+            if(mode==="page"){
+              var from = parseInt(b.querySelector("#paFrom").value,10);
+              var to = parseInt(b.querySelector("#paTo").value,10);
+              if(isNaN(from) || isNaN(to)) return true;
+              v = to - from + 1;
+            } else {
+              v = parseInt(b.querySelector("#paQty2").value,10);
+              if(isNaN(v)) return true;
+            }
+            if(v<=0) return true;
+            adjustPlanProgress(p.id, v);
+            saveState();
+            regenerateTodayPlanTask(p.id);
+            renderPlans();
+          } }
+      ]
+    });
+    document.getElementById("paSeg").addEventListener("click", function(e){
+      var btn = e.target.closest("button");
+      if(!btn) return;
+      document.querySelectorAll("#paSeg button").forEach(function(x){ x.classList.remove("on"); });
+      btn.classList.add("on");
+      var m = btn.getAttribute("data-m");
+      document.getElementById("paPageBox").style.display = m==="page" ? "block" : "none";
+      document.getElementById("paQtyBox").style.display = m==="qty" ? "block" : "none";
+    });
+  }
   // make sure today already has an auto-generated task for every active plan
   function ensureTodayPlanTasks(){
     var changed = false;
@@ -1089,6 +1154,17 @@
       changed = true;
     });
     if(changed) saveState();
+  }
+  // drop today's not-yet-done auto task for a plan and regenerate it with fresh numbers
+  // (used after manually editing progress, or editing the plan itself, so the day's
+  // target always reflects the current remaining/days-left math — like a ledger balance)
+  function regenerateTodayPlanTask(planId){
+    var todayTasks = getTasks(TODAY_KEY);
+    var idx = todayTasks.findIndex(function(x){ return x.planId===planId && !x.done; });
+    if(idx>-1) todayTasks.splice(idx,1);
+    ensureTodayPlanTasks();
+    renderCalendar();
+    if(typeof calSelected !== "undefined" && calSelected===TODAY_KEY){ renderCalDay(); }
   }
 
   function renderPlans(){
@@ -1139,7 +1215,7 @@
 
     var actions = document.createElement("div");
     actions.className = "plan-actions";
-    actions.innerHTML = '<span data-act="edit">✏️</span><span data-act="del">🗑️</span>';
+    actions.innerHTML = (isDone?"":'<span data-act="add" title="补记这次完成的量">➕</span>')+'<span data-act="edit">✏️</span><span data-act="del">🗑️</span>';
 
     var head = document.createElement("div");
     head.className = "plan-head";
@@ -1180,9 +1256,17 @@
         p.doneUnits = Math.max(0, Math.min(total, v));
         p.status = p.doneUnits>=total ? "done" : "active";
         saveState();
+        regenerateTodayPlanTask(p.id);
         renderPlans();
       });
     });
+    var addBtn = actions.querySelector('[data-act="add"]');
+    if(addBtn){
+      addBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        openPlanAddModal(p);
+      });
+    }
     actions.querySelector('[data-act="edit"]').addEventListener("click", function(e){
       e.stopPropagation();
       openPlanForm(p);
@@ -1258,18 +1342,10 @@
             if(planRemaining(plan) <= 0){ plan.status="done"; }
             if(!existing) state.plans.push(plan);
 
-            // if editing and today's auto task for this plan isn't done yet, drop it so it regenerates with fresh numbers
-            var todayTasks = getTasks(TODAY_KEY);
-            var idx = todayTasks.findIndex(function(x){ return x.planId===plan.id && !x.done; });
-            if(idx>-1) todayTasks.splice(idx,1);
-
             saveState();
-            ensureTodayPlanTasks();
+            regenerateTodayPlanTask(plan.id);
             renderPlans();
-            if(document.querySelector('[data-view="today"]').classList.contains("active")){
-              renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
-              renderStats();
-            }
+            renderStats();
           } }
       ]
     });
@@ -1501,7 +1577,7 @@
     inp.value = "";
     renderCalDay();
     renderCalendar();
-    if(calSelected===TODAY_KEY){ renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl); renderStats(); }
+    if(calSelected===TODAY_KEY){ renderStats(); }
   });
   document.getElementById("calNewTask").addEventListener("keydown", function(e){
     if(e.key==="Enter") document.getElementById("calAddBtn").click();
@@ -1557,7 +1633,6 @@
     }
     fillSubjSelect("logSubj", false);
     fillSubjSelect("timerSubj", false);
-    fillSubjSelect("newTaskSubj", true);
     fillSubjSelect("calNewTaskSubj", true);
 
     // manage list
@@ -1675,6 +1750,12 @@
       el.appendChild(row);
     });
   }
+  document.getElementById("cdAddToggle").addEventListener("click", function(){
+    var form = document.getElementById("cdAddForm");
+    var open = form.style.display !== "none";
+    form.style.display = open ? "none" : "block";
+    this.textContent = open ? "＋ 添加" : "收起";
+  });
   document.getElementById("addCdBtn").addEventListener("click", function(){
     var labelInp = document.getElementById("newCdLabel");
     var dateInp = document.getElementById("newCdDate");
@@ -1683,6 +1764,8 @@
     if(!label || !date) return;
     state.countdowns.push({ id:"cd_"+Date.now().toString(36), label:label, date:date, pinned:false });
     labelInp.value = ""; dateInp.value = "";
+    document.getElementById("cdAddForm").style.display = "none";
+    document.getElementById("cdAddToggle").textContent = "＋ 添加";
     saveState();
     renderCdManageList();
     renderCountdown();
@@ -1756,27 +1839,33 @@
   }
   document.getElementById("exportBtn").addEventListener("click", function(){
     var json = JSON.stringify(state, null, 2);
-    var downloadOk = false;
-    try{
-      var blob = new Blob([json], { type:"application/json" });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url;
-      a.download = "灯下备份_"+TODAY_KEY+".json";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-      downloadOk = true;
-    }catch(e){ downloadOk = false; }
-
+    function doDownload(){
+      try{
+        var blob = new Blob([json], { type:"application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "灯下备份_"+TODAY_KEY+".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+        return true;
+      }catch(e){ return false; }
+    }
     openModal({
       title: "导出备份",
       bodyHTML:
-        '<div class="modal-note">'+(downloadOk ? "已尝试下载备份文件；如果没有弹出保存提示，也可以直接复制下面的内容，粘贴到备忘录或文件里保存。" : "当前环境不支持直接下载文件，请复制下面的内容并粘贴保存。")+'</div>'+
+        '<div class="modal-note">选择保存方式：下载成文件，或者直接复制内容自己粘贴保存。</div>'+
         '<textarea id="exportText" readonly></textarea>',
       buttons: [
         { label:"关闭" },
+        { label:"下载文件", onClick: function(body, btn){
+            var ok = doDownload();
+            btn.textContent = ok ? "已下载 ✓" : "下载失败，请用复制";
+            setTimeout(function(){ btn.textContent = "下载文件"; }, 1800);
+            return true;
+          } },
         { label:"复制", primary:true, onClick: function(body, btn){
             copyText(json, btn);
             return true;
@@ -1831,7 +1920,6 @@
   /* ---------- init ---------- */
   ensureTodayPlanTasks();
   renderCountdown();
-  renderTaskListInto(taskListEl, TODAY_KEY, taskCountEl);
   renderStats();
   renderTimer();
   renderDurChips();
